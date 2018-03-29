@@ -1,0 +1,20 @@
+[
+  {
+    "normalizedPosition" : [
+      0.29999999999999999,
+      0.5
+    ],
+    "imageName" : "cat",
+    "name" : "David Meowie",
+    "birthday" : -1703568600
+  },
+  {
+    "normalizedPosition" : [
+      0.29999999999999999,
+      0.5
+    ],
+    "imageName" : "Forest",
+    "name" : "Mack",
+    "birthday" : -1703568600
+  }
+]
