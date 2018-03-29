@@ -99,9 +99,12 @@ do {
     let jsonURL = scenesURL.appendingPathExtension("json")
     let plistURL = scenesURL.appendingPathExtension("plist")
     let jsonEncoder = JSONEncoder()
-    jsonEncoder.outputFormatting = .prettyPrinted
+    jsonEncoder.dateEncodingStrategy = .iso8601 //Date formating in json formating
+    jsonEncoder.outputFormatting = .prettyPrinted //Easier to read
     let jsonDecoder = JSONDecoder()
+    jsonDecoder.dateDecodingStrategy = .iso8601
     let plistEncoder = PropertyListEncoder()
+    plistEncoder.outputFormat = .xml //XML need lot more data than equivalent json
     let plistDecoder = PropertyListDecoder()
     
     let jsonEncodedData = try jsonEncoder.encode(scenes)
@@ -125,11 +128,29 @@ FileManager.documentDirectoryURL
 
 //Property list supports and saves date in format iso 8601
 //PropertyList Encoder by default uses binary format
+//Json decode data size is more than property list -  bcoz property list encoder uses binary formating
+//Editing source code is possible without pretty printing option
+//https://developer.apple.com/documentation/foundation/archives_and_serialization/encoding_and_decoding_custom_types - Final Reference link of Encodable and Decodable
+//Final Conclusion
+//1. CoreData - Local persistance framework which is tight integration with xcode
+//2. CloudKit - Synchronizing between devices and sharing between users
+//3. Realm - Third Party Solution which combines online and offline capabilities & works outside of apples platform too
+//4. FireBase - Network centric database by google
 
 
+////Only Encode
+//struct Landmark: Encodable {
+//    var name: String
+//    var foundingYear: Int
+//}
+//
+////Only Decode
+//struct Landmark: Decodable {
+//    var name: String
+//    var foundingYear: Int
+//}
 
-
-
+//Custom Key names to be checked
 
 
 

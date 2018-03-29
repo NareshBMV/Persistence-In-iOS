@@ -2,7 +2,7 @@
 //Codable Types, Json, Property List
 //Swift4 Apple stadandardized the process
 //Codable protocol which combines encodable and decodable protocol
-//Codable- A type that can convert itself into and out of external representation
+//Codable- A type that can convert itself into and out of external representation - The process is know as making types codable
 import UIKit
 
 try FileManager.copyPNGSubdirectoriesToDocumentDirectory(subdirectoryNames: "Scenes", "Stickers")

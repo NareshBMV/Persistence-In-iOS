@@ -1,23 +1,33 @@
 import UIKit
 
 public struct Scene: Codable {
-  public init(
+    public init(
     width: Int,
     hasReverseGravity: Bool,
     backgroundName: String,
     stickers: [Sticker]
-  ) {
+    ) {
     self.width = width
     self.hasReverseGravity = hasReverseGravity
     self.backgroundName = backgroundName
     self.stickers = stickers
-  }
-  
-  public let width: Int
-  public let hasReverseGravity: Bool
-  public let backgroundName: String
-  public let stickers: [Sticker]
+    }
+    
+//    enum AdditionalInfoKeys: String, CodingKey {
+//        case width = "SceneWidth"
+//    }
+//
+//    public init(from decoder: Decoder) throws {
+//        let values = try decoder.container(keyedBy: AdditionalInfoKeys.self)
+//        width = try values.decode(Int.self, forKey: .width)
+//    }
+    
+    public let width: Int
+    public let hasReverseGravity: Bool
+    public let backgroundName: String
+    public let stickers: [Sticker]
 }
+
 
 //MARK: public
 public extension Scene {
