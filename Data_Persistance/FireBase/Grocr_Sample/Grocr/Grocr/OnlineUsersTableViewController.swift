@@ -38,6 +38,7 @@ class OnlineUsersTableViewController: UITableViewController {
     
     //Updating all online users
     userReference.observe(.value) { (snapshot) in
+      self.currentUsers.removeAll()
       if snapshot.exists() {
         for item in snapshot.children.allObjects as! [DataSnapshot] {
           self.currentUsers.append(item.value! as! String)

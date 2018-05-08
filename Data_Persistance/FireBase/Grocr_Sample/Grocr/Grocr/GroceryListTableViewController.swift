@@ -61,17 +61,17 @@ class GroceryListTableViewController: UITableViewController {
       self.tableView.reloadData()
     })
     
-    groceryItemsReference.child("pizza").observe(.value) {
-      snapshot in
-      let values = snapshot.value as! [String:AnyObject]
-      print(values)
-      let name = values["name"] as! String
-      let user = values["addedByUSer"] as! String
-      let completed = values["completed"] as! Bool
-      print("Name : \(name)")
-      print("User : \(user)")
-      print("Completed : \(completed)")
-    }
+//    groceryItemsReference.child("pizza").observe(.value) {
+//      snapshot in
+//      let values = snapshot.value as! [String:AnyObject]
+//      print(values)
+//      let name = values["name"] as! String
+//      let user = values["addedByUSer"] as! String
+//      let completed = values["completed"] as! Bool
+//      print("Name : \(name)")
+//      print("User : \(user)")
+//      print("Completed : \(completed)")
+//    }
     
     //Querying to get data
     groceryItemsReference.queryOrdered(byChild: "completed").observe(.value){
