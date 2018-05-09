@@ -8,8 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		6449027920A16F03009A3CA6 /* PetPal.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6449027720A16F03009A3CA6 /* PetPal.xcdatamodeld */; };
-		6449027C20A17021009A3CA6 /* Friend+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6449027A20A17021009A3CA6 /* Friend+CoreDataClass.swift */; };
-		6449027D20A17021009A3CA6 /* Friend+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6449027B20A17021009A3CA6 /* Friend+CoreDataProperties.swift */; };
+		646A5D0C20A2CFEC002AE6D0 /* Friend+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 646A5D0A20A2CFEC002AE6D0 /* Friend+CoreDataClass.swift */; };
+		646A5D1920A2D0F8002AE6D0 /* Friend+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 646A5D1820A2D0F8002AE6D0 /* Friend+CoreDataProperties.swift */; };
 		DD6B333C1F56DAD800F4C248 /* PetsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6B333B1F56DAD800F4C248 /* PetsViewController.swift */; };
 		DD6B33401F56E05F00F4C248 /* FriendData.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6B333F1F56E05F00F4C248 /* FriendData.swift */; };
 		DD6B33421F56E1A900F4C248 /* PetData.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6B33411F56E1A900F4C248 /* PetData.swift */; };
@@ -27,8 +27,8 @@
 
 /* Begin PBXFileReference section */
 		6449027820A16F03009A3CA6 /* PetPal.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PetPal.xcdatamodel; sourceTree = "<group>"; };
-		6449027A20A17021009A3CA6 /* Friend+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Friend+CoreDataClass.swift"; sourceTree = "<group>"; };
-		6449027B20A17021009A3CA6 /* Friend+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Friend+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		646A5D0A20A2CFEC002AE6D0 /* Friend+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Friend+CoreDataClass.swift"; sourceTree = "<group>"; };
+		646A5D1820A2D0F8002AE6D0 /* Friend+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Friend+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DD6B333B1F56DAD800F4C248 /* PetsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetsViewController.swift; sourceTree = "<group>"; };
 		DD6B333F1F56E05F00F4C248 /* FriendData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendData.swift; sourceTree = "<group>"; };
 		DD6B33411F56E1A900F4C248 /* PetData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetData.swift; sourceTree = "<group>"; };
@@ -97,8 +97,8 @@
 		DD952D631F56D8AA00AF81B8 /* PetPal */ = {
 			isa = PBXGroup;
 			children = (
-				6449027A20A17021009A3CA6 /* Friend+CoreDataClass.swift */,
-				6449027B20A17021009A3CA6 /* Friend+CoreDataProperties.swift */,
+				646A5D0A20A2CFEC002AE6D0 /* Friend+CoreDataClass.swift */,
+				646A5D1820A2D0F8002AE6D0 /* Friend+CoreDataProperties.swift */,
 				DD952D781F56D95300AF81B8 /* Cells */,
 				DD952D771F56D94300AF81B8 /* Data */,
 				DD719FF91F578F82008392C8 /* Extensions */,
@@ -170,6 +170,11 @@
 					DD952D601F56D8AA00AF81B8 = {
 						CreatedOnToolsVersion = 9.0;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 0;
+							};
+						};
 					};
 				};
 			};
@@ -210,11 +215,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				6449027920A16F03009A3CA6 /* PetPal.xcdatamodeld in Sources */,
-				6449027C20A17021009A3CA6 /* Friend+CoreDataClass.swift in Sources */,
+				646A5D0C20A2CFEC002AE6D0 /* Friend+CoreDataClass.swift in Sources */,
 				DD952D671F56D8AA00AF81B8 /* MainViewController.swift in Sources */,
 				DD6B33441F56EC2400F4C248 /* FriendCell.swift in Sources */,
 				DD6B333C1F56DAD800F4C248 /* PetsViewController.swift in Sources */,
-				6449027D20A17021009A3CA6 /* Friend+CoreDataProperties.swift in Sources */,
+				646A5D1920A2D0F8002AE6D0 /* Friend+CoreDataProperties.swift in Sources */,
 				DD719FFB1F578F96008392C8 /* Array+Extensions.swift in Sources */,
 				DD952D651F56D8AA00AF81B8 /* AppDelegate.swift in Sources */,
 				DDB438961F579FDB0078BBAD /* Int+Extension.swift in Sources */,
@@ -360,11 +365,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = CN7PQSW5JL;
 				INFOPLIST_FILE = PetPal/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.razeware.PetPal;
+				PRODUCT_BUNDLE_IDENTIFIER = com.iris.itc;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.0;
@@ -378,11 +383,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = CN7PQSW5JL;
 				INFOPLIST_FILE = PetPal/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.razeware.PetPal;
+				PRODUCT_BUNDLE_IDENTIFIER = com.iris.itc;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.0;
