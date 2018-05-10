@@ -9,8 +9,16 @@
 
 import Foundation
 import CoreData
+import UIKit
 
-
-public class Friend: NSManagedObject {
-
+public class Friend: NSManagedObject, Codable {
+    
+    required convenience public init(from decoder: Decoder) throws {
+        self.init(entity: Friend.entity() , insertInto: (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext)
+    }
+    
+    var age:Int{
+        return Calendar.current.dateComponents([.year], from: (dob as Date?)!, to: Date()).year!
+    }
 }
+

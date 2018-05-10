@@ -30,19 +30,18 @@
 
 import UIKit
 import CoreTelephony
+import CoreData
 class MainViewController: UIViewController {
 	@IBOutlet private weak var collectionView:UICollectionView!
 	
 	private var friends = [Friend]()
-	private var filtered = [Friend]()
-	private var isFiltered = false
 	private var friendPets = [String:[String]]()
 	private var selected:IndexPath!
 	private var picker = UIImagePickerController()
 	private var images = [String:UIImage]()
     private var appDelegate = UIApplication.shared.delegate as! AppDelegate
     private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    
+    private var query = ""
     var backgroundTask:UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
     
 	override func viewDidLoad() {
@@ -52,11 +51,8 @@ class MainViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        do{
-            friends = try context.fetch(Friend.fetchRequest())
-        } catch let error as NSError {
-          print("Cannot Fetch \(error) and \(error.userInfo)")
-        }
+        refresh()
+        showEditButton()
     }
     
 	override func didReceiveMemoryWarning() {
@@ -86,14 +82,12 @@ class MainViewController: UIViewController {
         let friend = Friend(entity: Friend.entity(), insertInto: context)
         friend.name = data.name
         friend.address = data.address
-        
-        
-        
+        friend.dob = data.dob as NSDate
+        friend.eyeColor = data.eyeColor
         appDelegate.saveContact()
-        friends.append(friend)
-        let indexPath = IndexPath(row: friends.count-1, section: 0)
-        collectionView.insertItems(at: [indexPath])
-	}
+        refresh()
+        collectionView.reloadData()
+    }
 	
 	// MARK:- Private Methods
 	private func showEditButton() {
@@ -101,23 +95,52 @@ class MainViewController: UIViewController {
 			navigationItem.leftBarButtonItem = editButtonItem
 		}
 	}
+    
+    func refresh() {
+        do{
+            let request = Friend.fetchRequest() as NSFetchRequest
+            if !query.isEmpty{
+                request.predicate = NSPredicate(format: "name contains[cd] %@", query)
+            }
+            let sort = NSSortDescriptor(key: #keyPath(Friend.name), ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
+            request.sortDescriptors = [sort]
+            friends = try context.fetch(request)
+            
+            for friend in friends {
+                let jsonEncoder = JSONEncoder()
+                jsonEncoder.outputFormatting = .prettyPrinted
+                let jsonData = try! jsonEncoder.encode(friend)
+                print(FileManager.documentDirectoryURL)
+                try! jsonData.write(to: URL(fileURLWithPath: "Friend", relativeTo: FileManager.documentDirectoryURL.appendingPathComponent("student").appendingPathExtension("json")))
+            }
+            
+        } catch let error as NSError {
+            print("Cannot Fetch \(error) and \(error.userInfo)")
+        }
+    }
 }
 
 // Collection View Delegates
 extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource {
 	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-		let count = isFiltered ? filtered.count : friends.count
+		let count = friends.count
 		return count
 	}
 	
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FriendCell", for: indexPath) as! FriendCell
-		let friend = isFiltered ? filtered[indexPath.row] : friends[indexPath.row]
+		let friend = friends[indexPath.row]
 		cell.nameLabel.text = friend.name
         cell.addressLabel.text = friend.address
-        if let image = images[friend.name!] {
-			cell.pictureImageView.image = image
-		}
+        cell.ageLabel.text = "Age : \(friend.age)"
+        cell.eyeColorView.backgroundColor = friend.eyeColor as? UIColor
+       
+        if let image = friend.picture {
+            cell.pictureImageView.image = UIImage(data: image as Data)
+        }
+        else {
+            cell.pictureImageView.image = UIImage(named: "person-placeholder")
+        }
 		return cell
 	}
 	
@@ -134,20 +157,18 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
 // Search Bar Delegate
 extension MainViewController:UISearchBarDelegate {
 	func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-		guard let query = searchBar.text else {
+		guard let text = searchBar.text else {
 			return
 		}
-		isFiltered = true
-		filtered = friends.filter({(friend) -> Bool in
-            return (friend.name?.contains(query))!
-		})
+        query = text
+        refresh()
 		searchBar.resignFirstResponder()
 		collectionView.reloadData()
 	}
 	
 	func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-		isFiltered = false
-		filtered.removeAll()
+        query = ""
+        refresh()
 		searchBar.text = nil
 		searchBar.resignFirstResponder()
 		collectionView.reloadData()
@@ -158,11 +179,24 @@ extension MainViewController:UISearchBarDelegate {
 extension MainViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
 		let image = info[UIImagePickerControllerOriginalImage] as! UIImage
-		let friend = isFiltered ? filtered[selected.row] : friends[selected.row]
-        images[friend.name!] = image
+		let friend = friends[selected.row]
+        friend.picture = UIImagePNGRepresentation(image) as? NSData
+        appDelegate.saveContact()
 		collectionView?.reloadItems(at: [selected])
 		picker.dismiss(animated: true, completion: nil)
 	}
 }
+
+extension FileManager {
+    static var documentDirectoryURL: URL {
+        return try! FileManager.default.url(
+            for: .documentDirectory,
+            in: .userDomainMask,
+            appropriateFor: nil,
+            create: false
+        )
+    }
+}
+
 
 
