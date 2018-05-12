@@ -33,9 +33,7 @@ import CoreTelephony
 import CoreData
 class MainViewController: UIViewController {
 	@IBOutlet private weak var collectionView:UICollectionView!
-	
-	private var friends = [Friend]()
-	private var friendPets = [String:[String]]()
+    private var fetchedRC : NSFetchedResultsController<Friend>!
 	private var selected:IndexPath!
 	private var picker = UIImagePickerController()
 	private var images = [String:UIImage]()
@@ -65,13 +63,8 @@ class MainViewController: UIViewController {
 		if segue.identifier == "petSegue" {
 			if let index = sender as? IndexPath {
 				let pvc = segue.destination as! PetsViewController
-				let friend = friends[index.row]
-                if let pets = friendPets[friend.name!] {
-					pvc.pets = pets
-				}
-				pvc.petAdded = {
-                    self.friendPets[friend.name!] = pvc.pets
-				}
+				let friend = fetchedRC.object(at: index)
+                pvc.friend = friend
 			}
 		}
 	}
@@ -91,7 +84,10 @@ class MainViewController: UIViewController {
 	
 	// MARK:- Private Methods
 	private func showEditButton() {
-		if friends.count > 0 {
+        guard let objects = fetchedRC.fetchedObjects else {
+            return
+        }
+		if objects.count > 0 {
 			navigationItem.leftBarButtonItem = editButtonItem
 		}
 	}
@@ -103,16 +99,36 @@ class MainViewController: UIViewController {
                 request.predicate = NSPredicate(format: "name contains[cd] %@", query)
             }
             let sort = NSSortDescriptor(key: #keyPath(Friend.name), ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
-            request.sortDescriptors = [sort]
-            friends = try context.fetch(request)
+            let eyeColorSort = NSSortDescriptor(key: #keyPath(Friend.eyeColor), ascending: true)
+            request.sortDescriptors = [eyeColorSort, sort]
+            fetchedRC = NSFetchedResultsController(fetchRequest: request, managedObjectContext: context, sectionNameKeyPath: #keyPath(Friend.eyeColor), cacheName: nil)
+            try fetchedRC.performFetch()
             
-            for friend in friends {
-                let jsonEncoder = JSONEncoder()
-                jsonEncoder.outputFormatting = .prettyPrinted
-                let jsonData = try! jsonEncoder.encode(friend)
-                print(FileManager.documentDirectoryURL)
-                try! jsonData.write(to: URL(fileURLWithPath: "Friend", relativeTo: FileManager.documentDirectoryURL.appendingPathComponent("student").appendingPathExtension("json")))
-            }
+//            //Encoding For NSManagedObject Using Encodable
+//            let url = URL(fileURLWithPath: "Friend", relativeTo: FileManager.documentDirectoryURL.appendingPathComponent("student").appendingPathExtension("json"))
+//            let jsonEncoder = JSONEncoder()
+//            jsonEncoder.outputFormatting = .prettyPrinted
+//            jsonEncoder.dateEncodingStrategy = .iso8601
+//            jsonEncoder.dataEncodingStrategy = .base64
+//            let friendsList = fetchedRC.fetchedObjects
+//            let jsonData = try! jsonEncoder.encode(friendsList)
+//            print(FileManager.documentDirectoryURL)
+//            try! jsonData.write(to:url)
+//
+//            print(FileManager.documentDirectoryURL)
+//
+//            //Decoding For NSManagedObject Using Decodable
+//            let jsonDecoder = JSONDecoder()
+//            jsonDecoder.dateDecodingStrategy = .iso8601
+//            jsonDecoder.dataDecodingStrategy = .base64
+//            let jsondata = try Data(contentsOf: url)
+//            let decodedObjectsArray = try jsonDecoder.decode([Friend].self, from:jsondata)
+//            print(decodedObjectsArray.count)
+//
+//            //Looping Over Fetched Data
+//            for friend in decodedObjectsArray {
+//                print("Name : \(friend.name!) ; Address : \(String(describing: friend.address!)) ; Age : \(friend.age)")
+//            }
             
         } catch let error as NSError {
             print("Cannot Fetch \(error) and \(error.userInfo)")
@@ -122,14 +138,33 @@ class MainViewController: UIViewController {
 
 // Collection View Delegates
 extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "HeaderRow", for: indexPath)
+        
+        if let label = view.viewWithTag(1000) as? UILabel {
+            if let friends = fetchedRC.sections?[indexPath.section].objects as? [Friend], let friend = friends.first {
+                label.text = "Eye Color : \(friend.eyeColorString)"
+            }
+        }
+        return view
+    }
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return fetchedRC.sections?.count ?? 0
+    }
+    
 	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-		let count = friends.count
-		return count
+        
+        guard let sections = fetchedRC.sections, let objects = sections[section].objects else {
+            return 0
+        }
+		return objects.count
 	}
 	
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FriendCell", for: indexPath) as! FriendCell
-		let friend = friends[indexPath.row]
+		let friend = fetchedRC.object(at: indexPath)
 		cell.nameLabel.text = friend.name
         cell.addressLabel.text = friend.address
         cell.ageLabel.text = "Age : \(friend.age)"
@@ -160,6 +195,13 @@ extension MainViewController:UISearchBarDelegate {
 		guard let text = searchBar.text else {
 			return
 		}
+        
+        //Normal Search Functionality
+//        isFiltered = true
+//        filtered = friends.filter({(friend) -> Bool in
+//            return friend.name!.contains(query)
+//        })
+        
         query = text
         refresh()
 		searchBar.resignFirstResponder()
@@ -179,8 +221,8 @@ extension MainViewController:UISearchBarDelegate {
 extension MainViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
 		let image = info[UIImagePickerControllerOriginalImage] as! UIImage
-		let friend = friends[selected.row]
-        friend.picture = UIImagePNGRepresentation(image) as? NSData
+		let friend = fetchedRC.object(at: selected)
+        friend.picture = UIImagePNGRepresentation(image) as NSData?
         appDelegate.saveContact()
 		collectionView?.reloadItems(at: [selected])
 		picker.dismiss(animated: true, completion: nil)
