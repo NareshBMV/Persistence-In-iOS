@@ -49,6 +49,27 @@ class MainViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
+        
+        //Checking Simple Fetch and update existing record
+//        var value:[Friend] = []
+//        let name = "Amaya"
+//        let fetchRequest = Friend.fetchRequest() as NSFetchRequest
+//        fetchRequest.predicate = NSPredicate(format: "name contains[cd] %@", name)
+//        let sort = NSSortDescriptor(key: #keyPath(Friend.name), ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
+//        let eyeColorSort = NSSortDescriptor(key: #keyPath(Friend.eyeColor), ascending: true)
+//        fetchRequest.sortDescriptors = [eyeColorSort, sort]
+//        do {
+//            fetchedRC = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+//            try fetchedRC.performFetch()
+//            value = fetchedRC.fetchedObjects!
+//        }
+//        catch let error as NSError {
+//            print(error)
+//        }
+//        let friend = value.first
+//        friend?.name = "Naresh"
+//        appDelegate.saveContact()
+        
         refresh()
         showEditButton()
     }
@@ -101,6 +122,7 @@ class MainViewController: UIViewController {
             let sort = NSSortDescriptor(key: #keyPath(Friend.name), ascending: true, selector: #selector(NSString.caseInsensitiveCompare(_:)))
             let eyeColorSort = NSSortDescriptor(key: #keyPath(Friend.eyeColor), ascending: true)
             request.sortDescriptors = [eyeColorSort, sort]
+            
             fetchedRC = NSFetchedResultsController(fetchRequest: request, managedObjectContext: context, sectionNameKeyPath: #keyPath(Friend.eyeColor), cacheName: nil)
             try fetchedRC.performFetch()
             

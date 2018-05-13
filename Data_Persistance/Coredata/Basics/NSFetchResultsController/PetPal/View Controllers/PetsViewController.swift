@@ -72,7 +72,7 @@ class PetsViewController: UIViewController {
     
     func refresh() {
         let request = Pets.fetchRequest() as NSFetchRequest<Pets>
-        
+                
         if query.isEmpty {
             request.predicate = NSPredicate(format: "owner = %@", friend)
         } else {
