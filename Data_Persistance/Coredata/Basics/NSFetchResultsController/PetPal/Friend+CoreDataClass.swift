@@ -32,6 +32,11 @@ import UIKit
 //SQLITE - Wrapper framework
 //Realm - Faster than coredata - broader cross platform support - better migration support
 
+
+//For saving directly through Decodable
+let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+let delegate = UIApplication.shared.delegate as! AppDelegate
+
 public class Friend: NSManagedObject,Decodable {
     
     enum CodingKeys: String, CodingKey {
@@ -43,12 +48,9 @@ public class Friend: NSManagedObject,Decodable {
     
     required convenience public init(from decoder: Decoder) throws {
         
-        //Additional error check
-        //        guard let contextUserInfoKey = CodingUserInfoKey.context,
-        //            let managedObjectContext = decoder.userInfo[contextUserInfoKey] as? NSManagedObjectContext,
-        //            let entity = NSEntityDescription.entity(forEntityName: ENTITY_NAME, in: managedObjectContext) else {
-        //                fatalError("Failed to decode Friend!")
-        //        }
+//        For saving directly
+//        guard let entity = NSEntityDescription.entity(forEntityName: "Friend", in: context) else { fatalError() }
+//        self.init(entity: entity, insertInto:context)
         
         //Decodable code
         self.init(entity: Friend.entity(), insertInto: nil)
@@ -57,6 +59,10 @@ public class Friend: NSManagedObject,Decodable {
         address = try values.decode(String.self, forKey: .address)
         dob = try values.decode(Date.self, forKey: .dob) as NSDate
 //        picture = try values.decode(Data.self, forKey: .picture) as NSData
+
+//        For savign directly
+//        delegate.saveContact()
+
 
     }
     
