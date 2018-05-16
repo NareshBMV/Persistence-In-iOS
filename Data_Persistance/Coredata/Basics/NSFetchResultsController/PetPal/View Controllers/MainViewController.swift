@@ -101,6 +101,30 @@ class MainViewController: UIViewController {
         appDelegate.saveContact()
         refresh()
         collectionView.reloadData()
+        
+//        //Decoding For NSManagedObject Using Decodable
+//        do {
+//
+//            let url = URL(fileURLWithPath: "Friend", relativeTo: FileManager.documentDirectoryURL.appendingPathComponent("student").appendingPathExtension("json"))
+//
+//            let jsonDecoder = JSONDecoder()
+//            jsonDecoder.dateDecodingStrategy = .iso8601
+//            jsonDecoder.dataDecodingStrategy = .base64
+//            let jsondata = try Data(contentsOf: url)
+//            let decodedObjectsArray = try jsonDecoder.decode([Friend].self, from:jsondata)
+//            print(decodedObjectsArray.count)
+//
+//            for friend in decodedObjectsArray {
+//                context.insert(friend)
+//                try context.save()
+//            }
+//        } catch let error as NSError {
+//            print("Error : \(error)")
+//        }
+//
+//        refresh()
+//        collectionView.reloadData()
+
     }
 	
 	// MARK:- Private Methods
